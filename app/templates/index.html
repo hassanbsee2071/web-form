@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script src="{{ url_for('static', filename='js/4-0-10-l1-select2-min.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='js/4-0-8-select2-min.js') }}" defer></script>
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
+  <link href="{{ url_for('static', filename='css/select2-min.css') }}" rel="stylesheet" />
+
+  <!-- Adding this for validation -->
+
+
+  <script>
+    function validateEmail(inputText, db_names, tool, hostname, justification, ssh_key, envi) {
+      console.log("DB Name Value:", db_names.value);
+      console.log("Tool Value:", tool.value);
+      console.log("Hostname value:", hostname.value);
+      console.log("Justification value:", justification.value);
+      console.log("SSH value is:", ssh_key.value);
+      console.log("Environment value is:", envi.value);
+    
+      const mailFormat = /\S+@\S+\.\S+/;
+      // const sshPattern = /^(ssh-rsa|ssh-ed25519)/;
+      const sshPattern = /^(ssh-(ed25519|rsa|dss|ecdsa) AAAA(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})( [^@]+@[^@]+)?)/;
+      
+      // Ensuring all fields are not empty or incorrectly selected
+      if (!inputText.value.match(mailFormat) || justification.value === "" || db_names.value === "" || db_names.value === null || tool.value === "Select" || hostname.value === "Select") {
+        alert("Invalid address or missing values! Please ensure all fields are correctly filled.");
+        return false;
+      }
+      
+      // Checking SSH key format
+      if (ssh_key.value === "" && ( envi.value === "dev" || envi.value === "staging" )) {
+        console.log ("Passing as it is dev or staging")
+        return true;
+      }
+
+      if (!ssh_key.value.match(sshPattern)) {
+        alert("Please enter a valid public SSH key starting with 'ssh-rsa' or 'ssh-ed25519'.");
+        return false;
+      }else{
+        return true
+      }
+      
+      // If all validations pass
+      return true;
+    }
+    </script>
+
+
+
+
+<!-- Adding this for validation --><!-- Adding this for validation --><!-- Adding this for validation -->
+
+<!-- 
+<script>
+
+    
+    var fewSeconds = 500;
+  $('#release').click(function(){
+      console.log("Got Clicked")
+      // Ajax request
+      var btn = $(this);
+      btn.prop('disabled', true);
+      setTimeout(function(){
+          btn.prop('disabled', false);
+      }, fewSeconds*1000);
+  });
+  
+  </script> -->
+
+
+<!-- Adding this for validation --><!-- Adding this for validation --><!-- Adding this for validation --><!-- Adding this for validation -->
+
+
+<script>
+  $(document).ready(function () {
+
+
+      function load_data(category_tool,environment) {
+        console.log("Html Second is:")
+          $.ajax({
+              url: "/picktools",
+              method: "POST",
+              data: { category_tool: category_tool,environment: environment },
+              dataType: "json",
+              success: function (data) { //alert(category_id)
+                  var html = "";
+                  console.log("Data in picktools:", data)
+                  console.log("Zero of picktools:", data[0])
+
+                  data.unshift({ id: 'placeholder_id', tool: 'Select' });
+                  console.log("Zero of picktools in tools:", data[0].tool)
+                  console.log("Zero of picktools in tools:", data[1].tool)
+                  console.log("Zero of picktools in tools:", data[2].tool)
+                  for (var count = 0; count < data.length; count++) {
+                        html += '<option value="' + data[count].tool + '">' + data[count].tool + "</option>";    
+                        console.log("Html is:", html)
+                    }
+                      $("#tool").html(html);
+                      $("#tool").selectpicker("refresh");
+                  
+              },
+          });
+      }
+
+      $(document).on("change", "#environment", function () {
+          console.log("Environment changed")
+          var category_tool = $("#tool").val();
+          var environment = $("#environment").val();
+              console.log ("value in tool is:", category_tool)
+
+          load_data(category_tool,environment);
+      });
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    function EnableDisableTextBox(chkPassport) {
+        var txtsshKey = document.getElementById("txtsshKey");
+        txtsshKey.disabled = sshKey.checked ? false : true;
+        if (!txtsshKey.disabled) {
+            txtsshKey.focus();
+        }
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    function disable_ssh_key_box() {
+        var txtsshKey = document.getElementById("txtsshKey");
+        var environment = document.getElementById("environment").value;
+        console.log("Environment Value is:", environment)
+      if ( environment == "dev" || environment == "staging" )
+      {
+        console.log ("I am in if of disable_ssh_key_box")
+        txtsshKey.disabled = true
+      }else {
+        txtsshKey.disabled = false
+      }
+
+    }
+</script>
+
+
+
+<script>
+    $(document).ready(function () { $("#comp").select2(); });
+    $(document).ready(function () { $("#sub_comp").select2(); });
+    $(document).ready(function () { $("#release").select2(); });
+    $(document).ready(function () { $("#product").select2(); });
+    $(document).ready(function () { $("#tool").select2(); });
+    $(document).ready(function () { $("#environment").select2(); });
+
+</script>
+
+<script>
+  $(document).ready(function() {
+  var tool = "";
+  $('#tool').change(function(){
+  
+    $.getJSON('/', {
+       tool: $('#tool').val()
+    }).done(function(data) {
+                  
+     })
+     
+   var tool = $('#tool').val()
+
+  });
+  });
+</script>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#tool").selectpicker();
+
+        $("#comp").selectpicker();
+
+        function load_data(category_id, environment) {
+          console.log("Html is:")
+            $.ajax({
+                url: "/pickhost",
+                method: "POST",
+                data: { category_id: category_id, environment: environment },
+                dataType: "json",
+                success: function (data) { //alert(category_id)
+                    var html = "";
+                    console.log("Data is:", data)
+                    console.log("Zero of Data:", data[0].alias)
+                    data.unshift({ id: 'placeholder_id', alias: 'Select' });
+                    for (var count = 0; count < data.length; count++) {
+                        html += '<option value="' + data[count].alias + '">' + data[count].alias + "</option>";    
+                        console.log("Html is:", html)
+                    }
+                        $("#comp").html(html);
+                        $("#comp").selectpicker("refresh");
+                    
+                },
+            });
+        }
+
+        $(document).on("change", "#tool", function () {
+            var category_id = $("#tool").val();
+            var environment = $("#environment").val();
+            load_data(category_id,environment);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<script>
+  $(document).ready(function () {
+      $("#comp").selectpicker();
+
+      $("#release").selectpicker();
+
+      function load_data(category_name,category_tool) {
+        console.log("Html Second is:")
+          $.ajax({
+              url: "/pickdbs",
+              method: "POST",
+              data: { category_name: category_name, category_tool: category_tool },
+              dataType: "json",
+              success: function (data) { //alert(category_id)
+                  var html = "";
+                  console.log("Data is:", data)
+                  console.log("Zero of Data:", data[0])
+                  for (var count = 0; count < data.length; count++) {
+                      html += '<option value="' + data[count] + '">' + data[count] + "</option>";     
+                      console.log("Html is:", html)
+                  }
+                      $("#release").html(html);
+                      $("#release").selectpicker("refresh");
+                  
+              },
+          });
+      }
+
+      $(document).on("change", "#comp", function () {
+          var category_name = $("#comp").val();
+          var category_tool = $("#tool").val();
+              console.log ("value is:", category_name)
+              console.log ("value in tool is:", category_tool)
+
+          load_data(category_name,category_tool);
+      });
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+
+
+
+
+  <!-- Bootstrap CSS -->
+
+
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='images/logo.png') }}">
+
+  <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+
+
+  <title>Almosfer</title>
+</head>
+
+<body>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12 text-center">
+        <img src="/static/images/nobgalmo.png" height="200px" alt="sorry">
+        <div id="text">
+          <div id="heading">
+            <h1 style="font-family:Roboto, sans-serif;"></h1>
+          </div>
+          <br>
+        </div>
+      </div>
+    </div>
+  
+
+    <div id="forum" class="col-6">
+      <div id="forum" class="col-6">
+
+
+
+        <form name="form" class="form" onsubmit="return validateEmail(document.form.email,document.form.release,document.form.tool,document.form.comp,document.form.justification,document.form.txtsshKey,document.form.environment)" method="POST" action="{{ url_for('load') }}" id="multiple_select_form">
+
+        <label for="requesteremail"><b>Requester Email Address</b></label>
+        <input type="text"  id="requesteremail" name="requesteremail" size="50" value="{{ email }}" readonly>
+
+        <label for="email"> <b>Enter email address</b></label>
+        <input id="email" name="email" size="50" placeholder="Enter your Email">      
+        <br><br>
+       
+        <label> <b> Environment </b></label>
+        
+        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="environment" name="environment" aria-placeholder="Select environment"  onchange="disable_ssh_key_box() ">
+          {% for env in envs %}
+
+        
+          <option value="{{env['environment']}}">{{env['environment']}}</option>
+          {% endfor %}
+        </select>
+        <br><br>
+
+        <label> <b> Tool </b></label>
+        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="tool" name="tool" aria-placeholder="Select Tool" >
+          {% for tools in tool %}
+
+          <option value="{{tools['tool']}}">{{tools['tool']}}</option>
+          {% endfor %}
+        </select>
+        <br><br>
+
+
+
+        <label> <b> Hostname </b></label>
+        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="comp" name="comp" aria-placeholder="Select Hostname"  onchange="disableEnable() ">
+          {% for alias in aliases %}
+          <option value="{{alias['alias']}}">{{alias['alias']}}</option>
+          {% endfor %}
+        </select>
+
+        <br><br>
+
+        <label> <b> DBs </b></label>
+        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="release" name="release" class="form-control selectpicker" data-live-search="true" data-placeholder="Select Databases" multiple>
+          {% for rel in db_names %}
+
+          <option value="{{rel}}">{{rel}}</option>
+          {% endfor %}
+        </select>
+        <br><br>
+        
+
+
+
+
+        <label> <b> Expiry </b></label>
+        <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="expiry" aria-placeholder="Select Expiry" name="expiry">
+          {% for expiry in expires %}
+
+          <option value="{{expiry}}">{{expiry}}</option>
+          {% endfor %}
+        </select>
+        <br>
+
+        <label><b>Business Justification</b></label>
+        <textarea id="justification" name="justification" rows="4" cols="50" ></textarea>
+        <br><br>
+
+      
+      <label><b>SSH Public Key (Only For Production)</b></label>
+<!--      <label for="sshKey">-->
+<!--          <input type="checkbox" id="sshKey" onclick="EnableDisableTextBox(this)" />-->
+<!--      </label>-->
+      <textarea id="txtsshKey" name="txtsshKey" rows="4" cols="50" disabled="disabled"></textarea>
+<!--      <textarea id="txtsshKey" name="txtsshKey" rows="4" cols="50"></textarea>-->
+      <br><br>
+        
+      
+<div id="submit">
+       
+        <button type="submit" class="btn btn-primary btn-lg" >
+          Submit</button>
+</div>
+      </form>
+
+    </div>
+    <div>
+      {{table_data | safe}}
+    </div>
+
+
+
+
+  </div>
+  </div>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+
+
+<script>
+function disableEnable() {
+  console.log("Got changed")
+  var release = document.getElementById("release");
+          release.disabled = true;
+          release.focus();
+          setTimeout(function(){release.disabled = false;},4000);
+
+}
+</script>
+
+
+
+
+
+
+
+<script>
+  $(document).ready(function(){
+   $('.selectpicker').selectpicker();
+   
+   $('#skills').change(function(){
+    $('#hidden_skills').val($('#skills').val());
+   });
+
+  });
+  </script>
+
+
+<script>
+
+  function setIdle(cb, seconds) {
+      var timer; 
+      var interval = seconds * 1000;
+      function refresh() {
+              clearInterval(timer);
+              timer = setTimeout(cb, interval);
+      };
+      $(document).on('keypress click', refresh);
+      refresh();
+  }
+  
+  setIdle(function() {
+      location.href = location.href;
+  }, 20);
+  
+  </script>
+
+</body>
+
+</html>

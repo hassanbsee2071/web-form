@@ -1,0 +1,49 @@
+#Scaling Parameters
+hpa:
+  enabled: true
+  targetCPUUtilizationPercentage: 70
+  TargetAvgMemoryUtilization: 70
+replicaCount: 1
+maxReplicas: 1
+
+## Resource Limits ##
+resources:
+ limits:
+   cpu: "500m"
+   memory: "0.5Gi"
+ requests:
+   cpu: "50m"
+   memory: "128Mi"
+
+## Ingress Configuration ##
+ingress_internal:
+  enabled: true
+  hosts:
+    devops-database-webform.tajawal-dev.internal:
+      - /
+
+# Istio Gateway
+istio:
+  enabled: true
+  internal_gateway:
+    enabled: true
+    host:
+      devops-database-webform.tajawal-dev.internal:
+        - /
+  virtualService:
+    enabled: true
+
+
+## Envrionment Variables and configmap" are moved to consul --> http://consul.tajawal-dev.internal
+environment_variable:
+ enabled: true
+ data:
+    DEBUG: "TRUE"
+    SQLALCHEMY_TRACK_MODIFICATIONS: "FALSE"
+    SQLALCHEMY_POOL_TIMEOUT: "100"
+    SQLALCHEMY_POOL_RECYCLE: "10"
+    JENKINS: "https://jenkins-prod.tajawal.io"
+    JENKINS_USER: "syed.hassan@seera.sa"
+    JOB: "devops/job/slack"
+    CHANNEL: "ops"
+    TABLE_NAME: "databases_types"

@@ -1,0 +1,43 @@
+#Scaling Parameters
+hpa:
+  enabled: true
+  targetCPUUtilizationPercentage: 70
+  TargetAvgMemoryUtilization: 70
+replicaCount: 1
+maxReplicas: 2
+
+## Resource Limits ##
+resources:
+ limits:
+   cpu: "2"
+   memory: 2Gi
+ requests:
+   cpu: "50m"
+   memory: "128Mi"
+
+## Ingress Configuration ##
+ingress_internal:
+  enabled: true
+  hosts:
+    devops-database-webform.tajawal-staging.internal:
+      - /
+
+# Istio Gateway
+istio:
+  enabled: false
+  internal_gateway:
+    enabled: false
+    host:
+      devops-database-webform.tajawal-staging.internal:
+        - /
+  virtualService:
+    enabled: flase
+
+## Envrionemnt Variables and configmap"
+environment_variable:
+  enabled: true
+  data:
+    APP: "devops-database-webform-staging"
+    LOG_LEVEL: "error"
+    LOG_FORMAT: "json"
+    PORT: "80"

@@ -1,0 +1,68 @@
+#Scaling Parameters
+hpa:
+  enabled: true
+  targetCPUUtilizationPercentage: 70
+  TargetAvgMemoryUtilization: 70
+replicaCount: 1
+maxReplicas: 2
+
+## Resource Limits ##
+resources:
+ limits:
+   cpu: "2"
+   memory: 2Gi
+ requests:
+   cpu: "50m"
+   memory: "128Mi"
+
+## Ingress Configuration ##
+ingress_internal:
+  enabled: true
+  annotations:
+    alb.ingress.kubernetes.io/auth-idp-oidc: '{"issuer":"https://sso.almosafer.com","authorizationEndpoint":"https://sso.almosafer.com/oauth2/v1/authorize","tokenEndpoint":"https://sso.almosafer.com/oauth2/v1/token","userInfoEndpoint":"https://sso.almosafer.com/oauth2/v1/userinfo","secretName":"oidc-app-secret-db-form"}'
+    alb.ingress.kubernetes.io/auth-on-unauthenticated-request: authenticate
+    alb.ingress.kubernetes.io/auth-scope: email openid profile
+    alb.ingress.kubernetes.io/auth-session-cookie: AWSELBAuthSessionCookie
+    alb.ingress.kubernetes.io/auth-session-timeout: "300"
+    alb.ingress.kubernetes.io/auth-type: oidc
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:eu-west-1:820808869900:certificate/619301f9-b9f9-437d-bb59-f4e5607334ba
+    alb.ingress.kubernetes.io/group.name: tajawal.io
+    alb.ingress.kubernetes.io/healthcheck-path: /healthcheck
+    alb.ingress.kubernetes.io/healthcheck-port: "5000"
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/load-balancer-name: tajawal-prod-devops-alb-io-int
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/target-type: ip
+    kubernetes.io/ingress.class: alb
+  hosts:
+    db-request.tajawal.io:
+      - /*
+
+
+# Istio Gateway
+istio:
+  enabled: false
+  internal_gateway:
+    enabled: false
+    host:
+      db-webform.tajawal.io:
+        - /
+  virtualService:
+    enabled: flase
+
+## Envrionemnt Variables and configmap"
+environment_variable:
+ enabled: true
+ data:
+    DEBUG: "TRUE"
+    SQLALCHEMY_TRACK_MODIFICATIONS: "FALSE"
+    SQLALCHEMY_POOL_TIMEOUT: "100"
+    SQLALCHEMY_POOL_RECYCLE: "10"
+    JENKINS: "https://jenkins-prod.tajawal.io"
+    JENKINS_USER: "devops@seera.sa"
+    JOB: "devops/job/prod-devops/job/database_management"
+    CHANNEL: "database-ops"
+    TABLE_NAME: "databases_types"

@@ -1,0 +1,20 @@
+#Component Details ##
+Component: devops
+SubComponent: database-webform
+
+## Secrets ##
+secret_variable:
+  enabled: true
+  data:
+    - SQLALCHEMY_DATABASE_URI
+    - JENKINS_USER_TOKEN
+
+
+## Probes ##
+healthtype: script
+checkcommand: pidof python
+
+## Ports ##
+service:
+  containerPort: 5000
+
